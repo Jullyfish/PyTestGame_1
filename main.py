@@ -1,6 +1,6 @@
 import pygame
 
-displayWidth, displayHeight, displayFrame = 1280, 720, 50
+displayWidth, displayHeight, displayFrame = 1280, 720, 60
 
 pygame.init()
 win = pygame.display.set_mode((displayWidth, displayHeight))
@@ -17,51 +17,70 @@ pygame.image.load('sprites/L2.png'), pygame.image.load('sprites/L3.png'), pygame
 pygame.image.load('sprites/L5.png'), pygame.image.load('sprites/L6.png'), pygame.image.load('sprites/L7.png'), 
 pygame.image.load('sprites/L8.png'), pygame.image.load('sprites/L9.png'), pygame.image.load('sprites/L10.png')]
 
+bg = pygame.image.load('backgrounds/bg1.jpg')
 playerStandRight = pygame.image.load('sprites/R0.png')
 playerStandLeft = pygame.image.load('sprites/L0.png')
 
 clock = pygame.time.Clock()
 
-width = 50
-height = 50
+#width = 50
+#height = 50
 
-x = displayFrame
-y = displayHeight - height - displayFrame
-speed = 8
+#x = displayFrame
+#y = displayHeight - height - displayFrame
+#speed = 8
 
-left, right = False, False
-animCount = 0
-standRight, standLeft = True, False
+#left, right = False, False
+#animCount = 0
+#standRight, standLeft = True, False
 
-isJump = False
-jumpCount = 10
+#isJump = False
+#jumpCount = 10
+
+class player(object):
+	def __init__(self, x, y, width, height):
+		self.x = displayFrame
+		self.y = displayHeight - height - displayFrame
+		self.width = width
+		self.height = height
+		self.speed = 8
+		self.isJump = False
+		self.jumpCount = 10
+		self.animCount = 0
+		self.left = False
+		self.right = False
+		self.standRight = True
+		self.standLeft = False
 
 def drawWindow():
 	global animCount, standRight, standLeft 
 
-	win.fill((0, 0, 0))
+	#win.fill((0, 0, 0))
+	win.blit(bg, (0, 0))
 
-	if animCount + 1 >= len(walkRight) * 3:
-		animCount = 0
+	if sharpshooter.animCount + 1 >= len(walkRight) * 3:
+		sharpshooter.animCount = 0
 
-	if right:
-		win.blit(walkRight[animCount // 3], (x, y))	
-		animCount +=1
-		standRight, standLeft = True, False
-	elif left:
-		win.blit(walkLeft[animCount // 3], (x, y))	
-		animCount +=1	
-		standRight, standLeft = False, True	
+	if sharpshooter.right:
+		win.blit(walkRight[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+		sharpshooter.animCount +=1
+		sharpshooter.standRight, sharpshooter.standLeft = True, False
+	elif sharpshooter.left:
+		win.blit(walkLeft[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+		sharpshooter.animCount +=1	
+		sharpshooter.standRight, sharpshooter.standLeft = False, True	
 	else:
-		if standRight:
-			win.blit(playerStandRight, (x, y))
-		elif standLeft:
-			win.blit(playerStandLeft, (x, y))		
+		if sharpshooter.standRight:
+			win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
+		elif sharpshooter.standLeft:
+			win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))		
 
 		
 	#pygame.draw.rect(win, (0, 150, 0), (x, y, width, height))	
 	pygame.display.update()	
 
+
+sharpshooter = player(300, 410, 64, 64)
 run = True
 while run:
 	clock.tick(30)
@@ -74,32 +93,32 @@ while run:
 	if keys[pygame.K_ESCAPE]:
 		run = False		
 
-	if keys[pygame.K_LEFT] and x > displayFrame:
-		x -= speed		
-		left = True
-		right = False
-	elif keys[pygame.K_RIGHT] and x < displayWidth - displayFrame - width:
-		x += speed
-		left = False
-		right = True
+	if keys[pygame.K_LEFT] and sharpshooter.x > displayFrame:
+		sharpshooter.x -= sharpshooter.speed		
+		sharpshooter.left = True
+		sharpshooter.right = False
+	elif keys[pygame.K_RIGHT] and sharpshooter.x < displayWidth - displayFrame - sharpshooter.width:
+		sharpshooter.x += sharpshooter.speed
+		sharpshooter.left = False
+		sharpshooter.right = True
 	else:
-		left = False
-		right = False
-		animCount = 0 	
+		sharpshooter.left = False
+		sharpshooter.right = False
+		sharpshooter.animCount = 0 	
 
-	if not(isJump):	
+	if not(sharpshooter.isJump):	
 		if keys[pygame.K_SPACE]:
-			isJump = True		
+			sharpshooter.isJump = True		
 	else:
-		if jumpCount >= -10:
-			if jumpCount < 0:
-				y += (jumpCount ** 2) / 2
+		if sharpshooter.jumpCount >= -10:
+			if sharpshooter.jumpCount < 0:
+				sharpshooter.y += (sharpshooter.jumpCount ** 2) / 2
 			else:	
-				y -= (jumpCount ** 2) / 2
-			jumpCount -= 1
+				sharpshooter.y -= (sharpshooter.jumpCount ** 2) / 2
+			sharpshooter.jumpCount -= 1
 		else:
-			isJump = False
-			jumpCount = 10	
+			sharpshooter.isJump = False
+			sharpshooter.jumpCount = 10	
 
 	drawWindow()		
 
