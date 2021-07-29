@@ -1,6 +1,6 @@
 import pygame
 
-displayWidth, displayHeight, displayFrame = 1280, 720, 60
+displayWidth, displayHeight, displayFrame = 1280, 720, 0
 
 pygame.init()
 win = pygame.display.set_mode((displayWidth, displayHeight))
@@ -23,20 +23,6 @@ playerStandLeft = pygame.image.load('sprites/L0.png')
 
 clock = pygame.time.Clock()
 
-#width = 50
-#height = 50
-
-#x = displayFrame
-#y = displayHeight - height - displayFrame
-#speed = 8
-
-#left, right = False, False
-#animCount = 0
-#standRight, standLeft = True, False
-
-#isJump = False
-#jumpCount = 10
-
 class player(object):
 	def __init__(self, x, y, width, height):
 		self.x = displayFrame
@@ -52,35 +38,32 @@ class player(object):
 		self.standRight = True
 		self.standLeft = False
 
+	def draw(self, win):
+		if sharpshooter.animCount + 1 >= len(walkRight) * 3:
+			sharpshooter.animCount = 0
+
+		if sharpshooter.right:
+			win.blit(walkRight[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+			sharpshooter.animCount +=1
+			sharpshooter.standRight, sharpshooter.standLeft = True, False
+		elif sharpshooter.left:
+			win.blit(walkLeft[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+			sharpshooter.animCount +=1	
+			sharpshooter.standRight, sharpshooter.standLeft = False, True	
+		else:
+			if sharpshooter.standRight:
+				win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
+			elif sharpshooter.standLeft:
+				win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))	
+
+
 def drawWindow():
-	global animCount, standRight, standLeft 
-
-	#win.fill((0, 0, 0))
-	win.blit(bg, (0, 0))
-
-	if sharpshooter.animCount + 1 >= len(walkRight) * 3:
-		sharpshooter.animCount = 0
-
-	if sharpshooter.right:
-		win.blit(walkRight[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
-		sharpshooter.animCount +=1
-		sharpshooter.standRight, sharpshooter.standLeft = True, False
-	elif sharpshooter.left:
-		win.blit(walkLeft[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
-		sharpshooter.animCount +=1	
-		sharpshooter.standRight, sharpshooter.standLeft = False, True	
-	else:
-		if sharpshooter.standRight:
-			win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
-		elif sharpshooter.standLeft:
-			win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))		
-
-		
-	#pygame.draw.rect(win, (0, 150, 0), (x, y, width, height))	
+	win.blit(bg, (0, 0))	
+	sharpshooter.draw(win)
 	pygame.display.update()	
 
 
-sharpshooter = player(300, 410, 64, 64)
+sharpshooter = player(1000, 1000, 48, 96)
 run = True
 while run:
 	clock.tick(30)
