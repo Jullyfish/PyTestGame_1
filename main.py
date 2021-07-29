@@ -17,6 +17,9 @@ pygame.image.load('sprites/L2.png'), pygame.image.load('sprites/L3.png'), pygame
 pygame.image.load('sprites/L5.png'), pygame.image.load('sprites/L6.png'), pygame.image.load('sprites/L7.png'), 
 pygame.image.load('sprites/L8.png'), pygame.image.load('sprites/L9.png'), pygame.image.load('sprites/L10.png')]
 
+jumpLeft = pygame.image.load('sprites/LJump.png')
+jumpRight = pygame.image.load('sprites/RJump.png')
+
 bg = pygame.image.load('backgrounds/bg1.jpg')
 playerStandRight = pygame.image.load('sprites/R0.png')
 playerStandLeft = pygame.image.load('sprites/L0.png')
@@ -42,7 +45,11 @@ class player(object):
 		if sharpshooter.animCount + 1 >= len(walkRight) * 3:
 			sharpshooter.animCount = 0
 
-		if sharpshooter.right:
+		if sharpshooter.isJump and sharpshooter.standRight:
+			win.blit(jumpRight, (sharpshooter.x, sharpshooter.y))	
+		elif sharpshooter.isJump and sharpshooter.standLeft:
+			win.blit(jumpLeft, (sharpshooter.x, sharpshooter.y))	
+		elif sharpshooter.right:
 			win.blit(walkRight[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
 			sharpshooter.animCount +=1
 			sharpshooter.standRight, sharpshooter.standLeft = True, False
@@ -50,11 +57,10 @@ class player(object):
 			win.blit(walkLeft[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
 			sharpshooter.animCount +=1	
 			sharpshooter.standRight, sharpshooter.standLeft = False, True	
-		else:
-			if sharpshooter.standRight:
-				win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
-			elif sharpshooter.standLeft:
-				win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))	
+		elif sharpshooter.standRight:
+			win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
+		elif sharpshooter.standLeft:
+			win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))	
 
 
 def drawWindow():
@@ -90,7 +96,7 @@ while run:
 		sharpshooter.animCount = 0 	
 
 	if not(sharpshooter.isJump):	
-		if keys[pygame.K_SPACE]:
+		if keys[pygame.K_UP]:
 			sharpshooter.isJump = True		
 	else:
 		if sharpshooter.jumpCount >= -10:
