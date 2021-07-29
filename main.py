@@ -7,12 +7,19 @@ win = pygame.display.set_mode((displayWidth, displayHeight))
 
 pygame.display.set_caption('Test Game')
 
-walkRight = [pygame.image.load('sprites/1.png'), pygame.image.load('sprites/2.png'), 
-pygame.image.load('sprites/3.png'), pygame.image.load('sprites/4.png'), pygame.image.load('sprites/5.png'),
-pygame.image.load('sprites/6.png'), pygame.image.load('sprites/7.png'), pygame.image.load('sprites/8.png'),
-pygame.image.load('sprites/9.png'), pygame.image.load('sprites/10.png'), pygame.image.load('sprites/11.png')]
+walkRight = [
+pygame.image.load('sprites/R1.png'), pygame.image.load('sprites/R2.png'), pygame.image.load('sprites/R3.png'), 
+pygame.image.load('sprites/R4.png'), pygame.image.load('sprites/R5.png'), pygame.image.load('sprites/R6.png'),
+pygame.image.load('sprites/R7.png'), pygame.image.load('sprites/R8.png'), pygame.image.load('sprites/R9.png'),
+pygame.image.load('sprites/R10.png'), pygame.image.load('sprites/R11.png'), pygame.image.load('sprites/R0.png')]
 
-playerStand = pygame.image.load('sprites/0.png')
+walkLeft = [
+pygame.image.load('sprites/L1.png'), pygame.image.load('sprites/L2.png'), pygame.image.load('sprites/L3.png'), 
+pygame.image.load('sprites/L4.png'), pygame.image.load('sprites/L5.png'), pygame.image.load('sprites/L6.png'),
+pygame.image.load('sprites/L7.png'), pygame.image.load('sprites/L8.png'), pygame.image.load('sprites/L9.png'),
+pygame.image.load('sprites/L10.png'), pygame.image.load('sprites/L11.png'),pygame.image.load('sprites/L0.png')]
+
+playerStand = pygame.image.load('sprites/R0.png')
 
 clock = pygame.time.Clock()
 
@@ -41,7 +48,7 @@ def drawWindow():
 		win.blit(walkRight[animCount // 3], (x, y))	
 		animCount +=1
 	elif left:
-		win.blit(walkRight[animCount // 5], (x, y))	
+		win.blit(walkLeft[animCount // 3], (x, y))	
 		animCount +=1	
 	else:
 		win.blit(playerStand, (x, y))	
