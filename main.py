@@ -152,14 +152,14 @@ while run:
 		sharpshooter.shooting = False	
 
 	if keys[pygame.K_LEFT] and sharpshooter.x > displayFrame:
-		if not(s):
+		if not(s) and not(sharpshooter.isJump):
 			sfxSteps.play()
 			s = True
 		sharpshooter.x -= sharpshooter.speed		
 		sharpshooter.left = True
 		sharpshooter.right = False
 	elif keys[pygame.K_RIGHT] and sharpshooter.x < displayWidth - displayFrame - sharpshooter.width:
-		if not(s):
+		if not(s) and not(sharpshooter.isJump):
 			sfxSteps.play()
 			s = True
 		sharpshooter.x += sharpshooter.speed
@@ -174,7 +174,9 @@ while run:
 
 	if not(sharpshooter.isJump):	
 		if keys[pygame.K_UP]:
-			sharpshooter.isJump = True		
+			sharpshooter.isJump = True	
+			sfxSteps.stop()	
+			s = False
 	else:
 		if sharpshooter.jumpCount >= -10:
 			if sharpshooter.jumpCount < 0:
