@@ -1,9 +1,9 @@
 import pygame
 
-displayWidth, displayHeight, displayFrame = 1280, 720, 0
+displayWidth, displayHeight, displayFrame = 1280, 720, 5
 
 pygame.init()
-win = pygame.display.set_mode((displayWidth, displayHeight))
+win = pygame.display.set_mode((displayWidth, displayHeight), pygame.FULLSCREEN)
 
 pygame.display.set_caption('Test Game')
 
@@ -28,10 +28,10 @@ clock = pygame.time.Clock()
 
 class player(object):
 	def __init__(self, x, y, width, height):
-		self.x = displayFrame
-		self.y = displayHeight - height - displayFrame
-		self.width = width
-		self.height = height
+		self.x = x #displayFrame 
+		self.y = y #displayHeight - height - 10 
+		self.width = width #hitbox size
+		self.height = height #hitbox size
 		self.speed = 8
 		self.isJump = False
 		self.jumpCount = 10
@@ -64,12 +64,14 @@ class player(object):
 
 
 def drawWindow():
-	win.blit(bg, (0, 0))	
-	sharpshooter.draw(win)
+	win.blit(bg, (0, 0))
+	#pygame.draw.rect(win, (255, 0, 0), 
+	#(sharpshooter.x, sharpshooter.y, sharpshooter.width, sharpshooter.height)) #draw hitbox	
+	sharpshooter.draw(win) 
 	pygame.display.update()	
 
 
-sharpshooter = player(1000, 1000, 48, 96)
+sharpshooter = player(0, displayHeight - 240, 40, 80)
 run = True
 while run:
 	clock.tick(30)
