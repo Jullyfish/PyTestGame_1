@@ -10,23 +10,15 @@ pygame.display.set_caption('Test Game')
 
 #<sprites>
 
-walkRight = [
+walk = [
 pygame.image.load('sprites/R2.png'), pygame.image.load('sprites/R3.png'), pygame.image.load('sprites/R4.png'),
 pygame.image.load('sprites/R5.png'), pygame.image.load('sprites/R6.png'), pygame.image.load('sprites/R7.png'),
 pygame.image.load('sprites/R8.png'), pygame.image.load('sprites/R9.png'),pygame.image.load('sprites/R10.png')]
 
-walkLeft = [
-pygame.image.load('sprites/L2.png'), pygame.image.load('sprites/L3.png'), pygame.image.load('sprites/L4.png'), 
-pygame.image.load('sprites/L5.png'), pygame.image.load('sprites/L6.png'), pygame.image.load('sprites/L7.png'), 
-pygame.image.load('sprites/L8.png'), pygame.image.load('sprites/L9.png'), pygame.image.load('sprites/L10.png')]
-
-jumpLeft = pygame.image.load('sprites/LJump.png')
-
-jumpRight = pygame.image.load('sprites/RJump.png')
+playerJump = pygame.image.load('sprites/RJump.png')
 
 bg = pygame.image.load('backgrounds/bg1.jpg')
-playerStandRight = pygame.image.load('sprites/R0.png')
-playerStandLeft = pygame.image.load('sprites/L0.png')
+playerStand = pygame.image.load('sprites/R0.png')
 
 #</sprites>
 
@@ -48,25 +40,25 @@ class player(object):
 		self.standLeft = False		
 
 	def draw(self, win):
-		if sharpshooter.animCount + 1 >= len(walkRight) * 3:
+		if sharpshooter.animCount + 1 >= len(walk) * 3:
 			sharpshooter.animCount = 0
 
 		if sharpshooter.isJump and sharpshooter.standRight:
-			win.blit(jumpRight, (sharpshooter.x, sharpshooter.y))	
+			win.blit(playerJump, (sharpshooter.x, sharpshooter.y))	
 		elif sharpshooter.isJump and sharpshooter.standLeft:
-			win.blit(jumpLeft, (sharpshooter.x, sharpshooter.y))	
+			win.blit(pygame.transform.flip(playerJump, True, False), (sharpshooter.x, sharpshooter.y))	
 		elif sharpshooter.right:
-			win.blit(walkRight[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+			win.blit(walk[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
 			sharpshooter.animCount +=1
 			sharpshooter.standRight, sharpshooter.standLeft = True, False
 		elif sharpshooter.left:
-			win.blit(walkLeft[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
+			win.blit(pygame.transform.flip(walk[sharpshooter.animCount // 3], True, False), (sharpshooter.x, sharpshooter.y))	
 			sharpshooter.animCount +=1	
 			sharpshooter.standRight, sharpshooter.standLeft = False, True	
 		elif sharpshooter.standRight:
-			win.blit(playerStandRight, (sharpshooter.x, sharpshooter.y))
+			win.blit(playerStand, (sharpshooter.x, sharpshooter.y))
 		elif sharpshooter.standLeft:
-			win.blit(playerStandLeft, (sharpshooter.x, sharpshooter.y))	
+			win.blit(pygame.transform.flip(playerStand, True, False), (sharpshooter.x, sharpshooter.y))	
 
 
 class projectile(object):
