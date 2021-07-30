@@ -27,7 +27,11 @@ playerJump = pygame.image.load('sprites/RJump.png')
 bg = pygame.image.load('backgrounds/bg1.jpg')
 playerStand = pygame.image.load('sprites/R0.png')
 
-#</sprites>
+#</sprites> <sfx>
+
+sfxSteps = pygame.mixer.Sound('sfx/steps.wav')
+
+#</sfx>
 
 clock = pygame.time.Clock()
 
@@ -37,7 +41,7 @@ class player(object):
 		self.y = y #displayHeight - height - 10 
 		self.width = width #hitbox size
 		self.height = height #hitbox size
-		self.speed = 8
+		self.speed = 5
 		self.isJump = False
 		self.jumpCount = 10
 		self.animCount = 0
@@ -111,14 +115,13 @@ class projectile(object):
 
 def drawWindow():
 	win.blit(bg, (0, 0))
-	#pygame.draw.rect(win, (255, 255, 255), 
-	#(sharpshooter.x, sharpshooter.y, sharpshooter.width, sharpshooter.height), 2) #draw hitbox	
+	#pygame.draw.rect(win, (255, 255, 255), (sharpshooter.x, sharpshooter.y, sharpshooter.width, sharpshooter.height), 2) #draw hitbox	
 	sharpshooter.draw(win) 
 	for bullet in bullets:
 		bullet.draw(win)
 	pygame.display.update()	
 
-
+s = False
 sharpshooter = player(0, displayHeight - 240, 40, 80)
 bullets = []
 run = True
@@ -149,17 +152,25 @@ while run:
 		sharpshooter.shooting = False	
 
 	if keys[pygame.K_LEFT] and sharpshooter.x > displayFrame:
+		if not(s):
+			sfxSteps.play()
+			s = True
 		sharpshooter.x -= sharpshooter.speed		
 		sharpshooter.left = True
 		sharpshooter.right = False
 	elif keys[pygame.K_RIGHT] and sharpshooter.x < displayWidth - displayFrame - sharpshooter.width:
+		if not(s):
+			sfxSteps.play()
+			s = True
 		sharpshooter.x += sharpshooter.speed
 		sharpshooter.left = False
 		sharpshooter.right = True
 	else:
+		sfxSteps.stop()
+		s = False
 		sharpshooter.left = False
 		sharpshooter.right = False
-		sharpshooter.animCount = 0 	
+		sharpshooter.animCount = 0 		
 
 	if not(sharpshooter.isJump):	
 		if keys[pygame.K_UP]:
