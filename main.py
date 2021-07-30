@@ -3,7 +3,7 @@ import pygame
 displayWidth, displayHeight, displayFrame = 1280, 720, 5
 
 pygame.init()
-win = pygame.display.set_mode((displayWidth, displayHeight)) #, pygame.FULLSCREEN
+win = pygame.display.set_mode((displayWidth, displayHeight), pygame.FULLSCREEN) #, pygame.FULLSCREEN
 
 pygame.display.set_caption('Test Game')
 
@@ -19,6 +19,8 @@ shotArrow =[
 pygame.image.load('sprites/shot1.png'), pygame.image.load('sprites/shot2.png'), pygame.image.load('sprites/shot3.png'),
 pygame.image.load('sprites/shot4.png'), pygame.image.load('sprites/shot5.png'), 
 pygame.image.load('sprites/shot6noArrow.png'), pygame.image.load('sprites/shot7.png'),]
+
+arrow = pygame.image.load('sprites/arrow.png')
 
 playerJump = pygame.image.load('sprites/RJump.png')
 
@@ -44,7 +46,8 @@ class player(object):
 		self.right = False
 		self.standRight = True
 		self.standLeft = False
-		self.shooting = False		
+		self.shooting = False
+		self.shot = False		
 
 	def draw(self, win):
 		if sharpshooter.animCount + 1 >= len(walk) * 3:
@@ -56,17 +59,24 @@ class player(object):
 		if sharpshooter.shooting and sharpshooter.standRight:
 			win.blit(shotArrow[sharpshooter.animCountShot // 3], (sharpshooter.x, sharpshooter.y))
 			sharpshooter.animCountShot += 1
+			if sharpshooter.animCountShot == 17:
+				sharpshooter.shot = True
+			else:
+				sharpshooter.shot = False
 		elif sharpshooter.shooting and sharpshooter.standLeft:
 			win.blit(pygame.transform.flip(shotArrow[sharpshooter.animCountShot // 3], True, False), (sharpshooter.x, sharpshooter.y))
 			sharpshooter.animCountShot += 1
-			
+			if sharpshooter.animCountShot == 17:
+				sharpshooter.shot = True
+			else:
+				sharpshooter.shot = False			
 		elif sharpshooter.isJump and sharpshooter.standRight:
 			win.blit(playerJump, (sharpshooter.x, sharpshooter.y))	
 		elif sharpshooter.isJump and sharpshooter.standLeft:
 			win.blit(pygame.transform.flip(playerJump, True, False), (sharpshooter.x, sharpshooter.y))	
 		elif sharpshooter.right:
 			win.blit(walk[sharpshooter.animCount // 3], (sharpshooter.x, sharpshooter.y))	
-			sharpshooter.animCount +=1
+			sharpshooter.animCount +=1	
 			sharpshooter.standRight, sharpshooter.standLeft = True, False
 		elif sharpshooter.left:
 			win.blit(pygame.transform.flip(walk[sharpshooter.animCount // 3], True, False), (sharpshooter.x, sharpshooter.y))	
@@ -91,7 +101,12 @@ class projectile(object):
 			self.speed = -16	
 
 	def	draw(self, win):
-		pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+		#if sharpshooter.shot:
+		if sharpshooter.standRight:
+			win.blit(arrow, (self.x, self.y))
+		elif sharpshooter.standLeft:
+			win.blit(pygame.transform.flip(arrow, True , False), (self.x, self.y))	
+		#pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
 
 
 def drawWindow():
@@ -127,8 +142,9 @@ while run:
 
 	if keys[pygame.K_s]:
 		sharpshooter.shooting = True
-		bullets.append(projectile(round(sharpshooter.x + sharpshooter.width // 2), 
-		round(sharpshooter.y + sharpshooter.height // 2), 6, (0,0,0), 1))	
+		if sharpshooter.shot:
+			bullets.append(projectile(round(sharpshooter.x + sharpshooter.width // 2), 
+			round(sharpshooter.y + sharpshooter.height / 2.5 ), 6, (0,0,0), 1))	
 	else:
 		sharpshooter.shooting = False	
 
