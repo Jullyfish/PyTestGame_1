@@ -30,6 +30,9 @@ playerStand = pygame.image.load('sprites/R0.png')
 #</sprites> <sfx>
 
 sfxSteps = pygame.mixer.Sound('sfx/steps.wav')
+sfxSteps.set_volume(0.3)
+sfxShot = pygame.mixer.Sound('sfx/shot.mp3')
+sfxShot.set_volume(1.0)
 
 #</sfx>
 
@@ -57,13 +60,15 @@ class player(object):
 		if sharpshooter.animCount + 1 >= len(walk) * 3:
 			sharpshooter.animCount = 0
 
-		if sharpshooter.animCountShot + 1 >= len(shotArrow) * 3:
+		if sharpshooter.animCountShot + 1 >= len(shotArrow) * 3 or not(sharpshooter.shooting):
 			sharpshooter.animCountShot = 0	
 
 		if sharpshooter.shooting and sharpshooter.standRight:
 			win.blit(shotArrow[sharpshooter.animCountShot // 3], (sharpshooter.x, sharpshooter.y))
 			sharpshooter.animCountShot += 1
+				
 			if sharpshooter.animCountShot == 17:
+				sfxShot.play()
 				sharpshooter.shot = True
 			else:
 				sharpshooter.shot = False
@@ -71,9 +76,10 @@ class player(object):
 			win.blit(pygame.transform.flip(shotArrow[sharpshooter.animCountShot // 3], True, False), (sharpshooter.x, sharpshooter.y))
 			sharpshooter.animCountShot += 1
 			if sharpshooter.animCountShot == 17:
+				sfxShot.play()
 				sharpshooter.shot = True
 			else:
-				sharpshooter.shot = False			
+				sharpshooter.shot = False		
 		elif sharpshooter.isJump and sharpshooter.standRight:
 			win.blit(playerJump, (sharpshooter.x, sharpshooter.y))	
 		elif sharpshooter.isJump and sharpshooter.standLeft:
