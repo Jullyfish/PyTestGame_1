@@ -1,12 +1,25 @@
 import pygame
 
+#like .ini file
+showMouse = 0
+showGameGrid = 0
+showSharpshooterHitbox = 1
+fullscreen = 1
+#</.ini>
+
 displayWidth, displayHeight, displayFrame = 1280, 720, 5
 
 pygame.init()
-win = pygame.display.set_mode((displayWidth, displayHeight), pygame.FULLSCREEN) #, pygame.FULLSCREEN
+
+if fullscreen:
+	win = pygame.display.set_mode((displayWidth, displayHeight), pygame.FULLSCREEN) #, pygame.FULLSCREEN
+else:
+	win = pygame.display.set_mode((displayWidth, displayHeight))	
 
 pygame.display.set_caption('Test Game')
-pygame.mouse.set_visible(False)
+
+if not(showMouse):
+	pygame.mouse.set_visible(False)
 
 
 #<sprites>
@@ -58,14 +71,13 @@ class player(object):
 		self.shot = False		
 
 	def draw(self, win):
-		if sharpshooter.animCount + 1 >= len(walk) * 3:
-			sharpshooter.animCount = 0
+		if sharpshooter.animCount + 1 >= len(walk) * 3: sharpshooter.animCount = 0
+		if sharpshooter.animCountShot + 1 >= len(shotArrow) * 3 or not(sharpshooter.shooting): sharpshooter.animCountShot = 0	
 
-		if sharpshooter.animCountShot + 1 >= len(shotArrow) * 3 or not(sharpshooter.shooting):
-			sharpshooter.animCountShot = 0	
-
-		if sharpshooter.shooting and sharpshooter.standRight:
-			win.blit(shotArrow[sharpshooter.animCountShot // 3], (sharpshooter.x, sharpshooter.y))
+		if sharpshooter.shooting and sharpshooter.standRight:	
+			img = shotArrow[sharpshooter.animCountShot // 3]
+			#img.rect.topleft = 
+			win.blit(img, img.get_rect(bottomright = (sharpshooter.x + sharpshooter.width, sharpshooter.y + sharpshooter.height)))
 			sharpshooter.animCountShot += 1
 				
 			if sharpshooter.animCountShot == 17:
@@ -74,7 +86,8 @@ class player(object):
 			else:
 				sharpshooter.shot = False
 		elif sharpshooter.shooting and sharpshooter.standLeft:
-			win.blit(pygame.transform.flip(shotArrow[sharpshooter.animCountShot // 3], True, False), (sharpshooter.x, sharpshooter.y))
+			img = pygame.transform.flip(shotArrow[sharpshooter.animCountShot // 3], True, False)
+			win.blit(img, img.get_rect(bottomleft = (sharpshooter.x, sharpshooter.y + sharpshooter.height)))
 			sharpshooter.animCountShot += 1
 			if sharpshooter.animCountShot == 17:
 				sfxShot.play()
@@ -107,9 +120,9 @@ class projectile(object):
 		self.color = color
 		self.facing = facing
 		if sharpshooter.standRight:
-			self.speed = 16
+			self.speed = 20
 		elif sharpshooter.standLeft:
-			self.speed = -16	
+			self.speed = -20	
 
 	def	draw(self, win):
 		#if sharpshooter.shot:
@@ -119,32 +132,25 @@ class projectile(object):
 			win.blit(pygame.transform.flip(arrow, True , False), (self.x, self.y))	
 		#pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)		
 
+
 class World(object):
 	def __init__(self, data):	
-		self.tile_list = []
 
 		tile_size = 20
-		tale_1 = (255, 0, 255)
 
-
-		row_count = 0
-		for row in data:
+		for row in range(0, len(data)):
 			col_count = 0
-			for tile in row:
-				if tile == 1:
-					pygame.draw.rect(win, (255, 0, 255), (col_count * tile_size, row_count * tile_size, tile_size, tile_size))
-				col_count += 1
-			row_count += 1	
-		
+			for col in range(0, len(data[row])):
+				if data[row][col] == 1:
+					pygame.draw.rect(win, (255, 0, 255), (col * tile_size, row * tile_size, tile_size, tile_size))
 
-	
-
+			
 
 def drawWindow():
 	win.blit(bg, (0, 0))
 	World(world_data())
-	#drawGrid(20)
-	pygame.draw.rect(win, (255, 255, 255), (sharpshooter.x, sharpshooter.y, sharpshooter.width, sharpshooter.height), 2) #draw hitbox	
+	if showGameGrid: drawGrid(20)
+	if showSharpshooterHitbox: pygame.draw.rect(win, (255, 255, 255), (sharpshooter.x, sharpshooter.y, sharpshooter.width, sharpshooter.height), 2) #draw hitbox	
 	sharpshooter.draw(win) 
 	for bullet in bullets:
 		bullet.draw(win)
