@@ -1,9 +1,18 @@
 import pygame
+'''
+To Do:
 
+-Переписать в класс Player управление персонажем. Изменить работу прыжка/гравитации.
+-Добавить взаимодействие с блоками.
+-Добавить гоблина НПС.
+-Добавить хп бары.
+
+
+'''
 #like .ini file
 showMouse = 0
 showGameGrid = 0
-showSharpshooterHitbox = 1
+showSharpshooterHitbox = 0
 fullscreen = 1
 #</.ini>
 
@@ -52,7 +61,7 @@ sfxShot.set_volume(1.0)
 
 clock = pygame.time.Clock()
 
-class player(object):
+class Player(object):
 	def __init__(self, x, y, width, height):
 		self.x = x #displayFrame 
 		self.y = y #displayHeight - height - 10 
@@ -69,6 +78,7 @@ class player(object):
 		self.standLeft = False
 		self.shooting = False
 		self.shot = False		
+
 
 	def draw(self, win):
 		if sharpshooter.animCount + 1 >= len(walk) * 3: sharpshooter.animCount = 0
@@ -109,20 +119,19 @@ class player(object):
 		elif sharpshooter.standRight:
 			win.blit(playerStand, (sharpshooter.x, sharpshooter.y))
 		elif sharpshooter.standLeft:
-			win.blit(pygame.transform.flip(playerStand, True, False), (sharpshooter.x, sharpshooter.y))	
+			win.blit(pygame.transform.flip(playerStand, True, False), (sharpshooter.x, sharpshooter.y))					
 
 
 class projectile(object):
 	def __init__(self, x, y, radius, color, facing):
 		self.x = x
 		self.y = y			
-		self.radius = radius
 		self.color = color
 		self.facing = facing
 		if sharpshooter.standRight:
-			self.speed = 20
+			self.speed = 25
 		elif sharpshooter.standLeft:
-			self.speed = -20	
+			self.speed = -25	
 
 	def	draw(self, win):
 		#if sharpshooter.shot:
@@ -206,7 +215,7 @@ def world_data():
 
 
 s = False
-sharpshooter = player(0, displayHeight - 240, 40, 80)
+sharpshooter = Player(0, displayHeight - 240, 40, 80)
 bullets = []
 run = True
 while run:
@@ -230,8 +239,8 @@ while run:
 	if keys[pygame.K_s]:
 		sharpshooter.shooting = True
 		if sharpshooter.shot:
-			bullets.append(projectile(round(sharpshooter.x + sharpshooter.width // 2), 
-			round(sharpshooter.y + sharpshooter.height / 2.5 ), 6, (0,0,0), 1))	
+			bullets.append(projectile(round(sharpshooter.x + sharpshooter.width), 
+			round(sharpshooter.y + sharpshooter.height / 4 ), 6, (0,0,0), 1))	
 	else:
 		sharpshooter.shooting = False	
 
@@ -271,6 +280,9 @@ while run:
 		else:
 			sharpshooter.isJump = False
 			sharpshooter.jumpCount = 10	
+
+	#for tile in world_data():	
+		#if tile[1].colliderect(sharpshooter.)
 
 	drawWindow()	
 
